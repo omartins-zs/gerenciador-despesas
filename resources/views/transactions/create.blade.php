@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-app-layout>
 <div class="max-w-4xl mx-auto mt-10">
     <h1 class="text-3xl font-bold mb-5">Adicionar Transação</h1>
     <div class="bg-white shadow-md rounded-lg p-6">
@@ -41,4 +39,5 @@
         </form>
     </div>
 </div>
-@endsection
+</x-app-layout>
+
