@@ -11,7 +11,7 @@ class TransactionController extends Controller
     // Listar transações
     public function index(Request $request)
     {
-        // Recuperar todas as transações do usuário autenticado
+        // Recuperar a query base das transações do usuário autenticado
         $query = Auth::user()->transactions();
 
         // Aplicar filtro de categoria, se existir
@@ -19,6 +19,7 @@ class TransactionController extends Controller
             $query->where('category', $request->category);
         }
 
+        // Obter as transações filtradas
         $transactions = $query->get();
 
         // Calcular as receitas, despesas e saldo líquido
@@ -27,10 +28,12 @@ class TransactionController extends Controller
         $netBalance = $totalIncome - $totalExpense;
 
         // Obter lista única de categorias para o filtro
-        $categories = Auth::user()->transactions()->distinct()->pluck('category');
+        $categories = Auth::user()->transactions()->select('category')->distinct()->pluck('category');
 
-        return view('transactions.index', compact('transactions', 'totalIncome', 'totalExpense', 'netBalance', 'categories'));
+        // Retornar a view com os dados
+        return view('transactions.index', compact( 'transactions', 'totalIncome','totalExpense','netBalance','categories'));
     }
+
     // Exibir formulário de criação
     public function create()
     {
