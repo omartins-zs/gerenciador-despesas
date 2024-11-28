@@ -8,9 +8,14 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
-
+    darkMode: 'class', // Permite alternar entre claro e escuro usando uma classe
     theme: {
         extend: {
+            colors: {
+                // Defina suas cores personalizadas aqui
+                'primary-light': '#fff',
+                'primary-dark': '#333',
+            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
