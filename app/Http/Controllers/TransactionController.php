@@ -9,19 +9,28 @@ use Illuminate\Support\Facades\Auth;
 class TransactionController extends Controller
 {
     // Listar transações
-    public function index()
+    public function index(Request $request)
     {
         // Recuperar todas as transações do usuário autenticado
-        $transactions = Auth::user()->transactions;
+        $query = Auth::user()->transactions();
 
-        // Calcular as receitas e despesas separadamente
+        // Aplicar filtro de categoria, se existir
+        if ($request->has('category') && $request->category !== 'all') {
+            $query->where('category', $request->category);
+        }
+
+        $transactions = $query->get();
+
+        // Calcular as receitas, despesas e saldo líquido
         $totalIncome = $transactions->where('type', 'income')->sum('amount');
         $totalExpense = $transactions->where('type', 'expense')->sum('amount');
-        $netBalance = $totalIncome - $totalExpense; // O valor líquido
+        $netBalance = $totalIncome - $totalExpense;
 
-        return view('transactions.index', compact('transactions', 'totalIncome', 'totalExpense', 'netBalance'));
+        // Obter lista única de categorias para o filtro
+        $categories = Auth::user()->transactions()->distinct()->pluck('category');
+
+        return view('transactions.index', compact('transactions', 'totalIncome', 'totalExpense', 'netBalance', 'categories'));
     }
-
     // Exibir formulário de criação
     public function create()
     {
