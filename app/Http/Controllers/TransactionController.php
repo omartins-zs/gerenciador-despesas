@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class TransactionController extends Controller
 {
@@ -31,7 +32,7 @@ class TransactionController extends Controller
         $categories = Auth::user()->transactions()->select('category')->distinct()->pluck('category');
 
         // Retornar a view com os dados
-        return view('transactions.index', compact( 'transactions', 'totalIncome','totalExpense','netBalance','categories'));
+        return view('transactions.index', compact('transactions', 'totalIncome', 'totalExpense', 'netBalance', 'categories'));
     }
 
     // Exibir formulário de criação
@@ -59,5 +60,36 @@ class TransactionController extends Controller
         ]);
 
         return redirect()->route('transactions.index')->with('success', 'Transação adicionada com sucesso!');
+    }
+
+    public function exportCsv()
+    {
+        $transactions = Auth::user()->transactions;
+
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=transacoes.csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0",
+        ];
+
+        $callback = function () use ($transactions) {
+            $output = fopen('php://output', 'w');
+            fputcsv($output, ['Descrição', 'Categoria', 'Tipo', 'Valor', 'Data']);
+
+            foreach ($transactions as $transaction) {
+                fputcsv($output, [
+                    $transaction->description,
+                    $transaction->category,
+                    $transaction->type === 'income' ? 'Receita' : 'Despesa',
+                    $transaction->amount,
+                    $transaction->created_at->format('d/m/Y'),
+                ]);
+            }
+            fclose($output);
+        };
+
+        return Response::stream($callback, 200, $headers);
     }
 }
