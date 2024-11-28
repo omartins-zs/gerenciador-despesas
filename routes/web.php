@@ -22,4 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/transactions/create', [TransactionController::class, 'create'])->name('transactions.create');
     Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
 });
+
+Route::get('/transactions/export', [TransactionController::class, 'exportCsv'])->name('transactions.export');
+
 require __DIR__.'/auth.php';
