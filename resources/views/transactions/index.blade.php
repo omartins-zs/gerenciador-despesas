@@ -1,12 +1,26 @@
 <x-app-layout>
     <div class="max-w-6xl mx-auto mt-10">
-        <h1 class="text-3xl font-bold mb-5">Minhas Transações</h1>
+        <h1 class="text-3xl font-bold mb-5 text-white">Minhas Transações</h1>
+
+        <!-- Exibir Totais de Despesas, Receitas e o Saldo Líquido -->
+        <div class="mb-6 text-white">
+            <p class="text-lg font-semibold">Total de Receitas: R$ {{ number_format($totalIncome, 2, ',', '.') }}</p>
+            <p class="text-lg font-semibold">Total de Despesas: R$ {{ number_format($totalExpense, 2, ',', '.') }}</p>
+            <p class="text-lg font-semibold">
+                Saldo Líquido:
+                <span class="{{ $netBalance < 0 ? 'text-red-500' : 'text-green-500' }}">
+                    R$ {{ number_format($netBalance, 2, ',', '.') }}
+                </span>
+            </p>
+        </div>
+
         <a href="{{ route('transactions.create') }}"
-            class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 inline-block">
+           class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 inline-block">
             Adicionar Transação
         </a>
+
         <div class="bg-white shadow-md rounded-lg p-6">
-            @if ($transactions->isEmpty())
+            @if($transactions->isEmpty())
                 <p class="text-gray-500">Nenhuma transação encontrada.</p>
             @else
                 <table class="min-w-full table-auto border-collapse border border-gray-200">
@@ -20,7 +34,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($transactions as $transaction)
+                        @foreach($transactions as $transaction)
                             <tr>
                                 <td class="px-4 py-2 border">{{ $transaction->description }}</td>
                                 <td class="px-4 py-2 border">{{ $transaction->category }}</td>
