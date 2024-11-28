@@ -6,6 +6,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransactionController extends Controller
 {
@@ -91,5 +92,21 @@ class TransactionController extends Controller
         };
 
         return Response::stream($callback, 200, $headers);
+    }
+
+    public function exportPdf()
+    {
+        // Recupera as transações do usuário autenticado
+        $transactions = Auth::user()->transactions;
+
+        if ($transactions->isEmpty()) {
+            return back()->with('error', 'Você não tem transações para exportar.');
+        }
+
+        // Carrega a view com os dados e gera o PDF
+        $pdf = Pdf::loadView('transactions.pdf', compact('transactions'));
+
+        // Faz o download do PDF gerado
+        return $pdf->download('transacoes.pdf');
     }
 }

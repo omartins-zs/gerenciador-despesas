@@ -22,5 +22,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/transactions/export', [TransactionController::class, 'exportCsv'])->name('transactions.export');
+Route::get('/transactions/export-pdf', [TransactionController::class, 'exportPdf'])->name('transactions.exportPdf');
 
 require __DIR__.'/auth.php';

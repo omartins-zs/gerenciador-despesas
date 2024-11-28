@@ -48,7 +48,18 @@
             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow inline-block mb-4 transition">
             Adicionar Transação
         </a>
+      <!-- Botões de Exportação -->
+<div class="mb-4">
+    <!-- Exportar CSV -->
+    <a href="{{ route('transactions.export') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md">
+        Exportar CSV
+    </a>
 
+    <!-- Exportar PDF -->
+    <a href="{{ route('transactions.exportPdf') }}" class="bg-green-500 text-white px-4 py-2 rounded-md ml-4">
+        Exportar PDF
+    </a>
+</div>
         <!-- Tabela de Transações -->
         <div class="bg-gray-800 shadow-md rounded-lg p-6">
             @if ($transactions->isEmpty())
