@@ -19,9 +19,6 @@
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         @include('layouts.navigation')
-        <button id="theme-toggle" class="p-2 bg-gray-200 dark:bg-gray-800 rounded-full">
-            🌙 / 🌞
-        </button>
         <!-- Page Heading -->
         @isset($header)
             <header class="bg-white dark:bg-gray-800 shadow">
@@ -37,23 +34,30 @@
         </main>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleButton = document.getElementById('theme-toggle');
-            const currentTheme = localStorage.getItem('theme');
+        // Função para alternar entre temas
+        const themeToggleButton = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const currentTheme = localStorage.getItem('theme') || 'light';
 
-            if (currentTheme) {
-                document.documentElement.classList.add(currentTheme);
+        // Definir tema inicial
+        if (currentTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+            themeIcon.textContent = '🌙'; // Ícone da lua
+        } else {
+            themeIcon.textContent = '🌞'; // Ícone do sol
+        }
+
+        // Alternar entre os temas
+        themeToggleButton.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                themeIcon.textContent = '🌞'; // Ícone do sol
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                themeIcon.textContent = '🌙'; // Ícone da lua
+                localStorage.setItem('theme', 'dark');
             }
-
-            toggleButton.addEventListener('click', () => {
-                if (document.documentElement.classList.contains('dark')) {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                }
-            });
         });
     </script>
 </body>
